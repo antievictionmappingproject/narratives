@@ -3,8 +3,6 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
      <meta charset="utf-8">
-    <!--Edit the title of the page-->
-   
     <meta name="description" content="Narratives of Displacement: Oral History Project documenting loss in San Francisco by the Anti-Eviction Mapping Project">
     <meta name="author" content="Anti-Eviction Mapping Project">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,7 +13,7 @@
     <![endif]-->
 
     <style type="text/css">
-      body {
+      html, body, #map {
         margin: 0;
         width: 100%;
         height: 100%;
@@ -25,13 +23,80 @@
   </head>
   <body>
 
-      <iframe width='100%' height='100%' frameborder='0' src='http://ampitup.cartodb.com/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/embed_map?title=true&description=true&search=false&shareable=true&cartodb_logo=true&layer_selector=false&legends=true&scrollwheel=true&fullscreen=true&sublayer_options=1%7C1&sql=&sw_lat=37.74900069437069&sw_lon=-122.52845764160156&ne_lat=37.81046205554295&ne_lon=-122.33430862426758' allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+    <div id="map"></div>
+
+    <script type="infowindow/html" id="infowindow_template">
+
+    <div class="cartodb-popup v2 custom_infowindow">
+      <a href="#close" class="cartodb-popup-close-button close">x</a>
+      <div class="cartodb-popup-content-wrapper">
+        <div class="row">
+          <div class="label"></div>
+          <div class="info">
+            <h4>Name</h4>
+            <p>{{name}}</p>
+            <h4>Description</h4>
+            <p>{{description}}</p>
+            <h4>Narrative</h4>
+            <p>{{{narrative}}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </script>
 
     <!-- Include CartoDB.js library -->
-    <script src="http://libs.cartocdn.com/cartodb.js/v2/cartodb.js"></script>
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <script>
+      function narrativesMap() {
+        var options = {
+          https: true,
+          title: true,
+          description: true,
+          searchControl: false,
+          shareable: true,
+          cartodb_logo: true,
+          layer_selector: false,
+          legends: true,
+          scrollwheel: true,
+          fullscreen: true,
+          sw_lat: 37.74900069437069,
+          sw_lon: -122.52845764160156,
+          ne_lat: 37.81046205554295,
+          ne_lon: -122.33430862426758
+        };
+        cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
+        .done(function(vis, layers) {
+          var layers = vis.getLayers();
+          console.log("layers");
+          console.log(layers);
+          // layer 0 is the base layer, layer 1 is cartodb layer
+          // setInteraction is disabled by default
+          // layers[1].setInteraction(true);
+          // layers[1].on("featureOver", function(e, pos, latlng, data, layerNumber) {
+          //   cartodb.log.log(e, pos, latlng, data, layerNumber);
+          // });
+          var sublayer = layers[1].getSubLayer(1);
+          // console.log("sublayer");
+          // console.log(sublayer);
+          sublayer.setInteraction(true);
+          sublayer.on("featureClick", function(e, latlng, pos, data, layerIndex) {
+            cartodb.log.log(latlng, pos);
+            var map = vis.getNativeMap();
+            console.log(map);
+            map.panTo(new L.LatLng(latlng[0], latlng[1]));
+          });
+        })
+        .error(function(err) {
+          console.log("error");
+          console.log(err);
+        });
+      }
+      window.onload = narrativesMap;
+    </script>
   </body>
 
   <!-- Include Google Analytics -->
-  <script src="googleanalytics.js"></script>
+  <!-- <script src="googleanalytics.js"></script> -->
 
 </html>
