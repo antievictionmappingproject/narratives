@@ -19,31 +19,11 @@
         height: 100%;
       }
     </style>
-   <title>Anti-Eviction Mapping Project - Narratives of Displacement</title>
+    <title>Anti-Eviction Mapping Project - Narratives of Displacement</title>
   </head>
   <body>
 
     <div id="map"></div>
-
-    <script type="infowindow/html" id="infowindow_template">
-
-    <div class="cartodb-popup v2 custom_infowindow">
-      <a href="#close" class="cartodb-popup-close-button close">x</a>
-      <div class="cartodb-popup-content-wrapper">
-        <div class="row">
-          <div class="label"></div>
-          <div class="info">
-            <h4>Name</h4>
-            <p>{{name}}</p>
-            <h4>Description</h4>
-            <p>{{description}}</p>
-            <h4>Narrative</h4>
-            <p>{{{narrative}}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    </script>
 
     <!-- Include CartoDB.js library -->
     <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
@@ -60,39 +40,24 @@
           legends: true,
           scrollwheel: true,
           fullscreen: true,
+          infowindow: true,
           sw_lat: 37.74900069437069,
           sw_lon: -122.52845764160156,
           ne_lat: 37.81046205554295,
           ne_lon: -122.33430862426758
         };
         cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
-        .done(function(vis, layers) {
-          var layers = vis.getLayers();
-          console.log("layers");
-          console.log(layers);
-          // layer 0 is the base layer, layer 1 is cartodb layer
-          // setInteraction is disabled by default
-          // layers[1].setInteraction(true);
-          // layers[1].on("featureOver", function(e, pos, latlng, data, layerNumber) {
-          //   cartodb.log.log(e, pos, latlng, data, layerNumber);
-          // });
-          var sublayer = layers[1].getSubLayer(1);
-          // console.log("sublayer");
-          // console.log(sublayer);
-          sublayer.setInteraction(true);
-          sublayer.on("featureClick", function(e, latlng, pos, data, layerIndex) {
-            cartodb.log.log(latlng, pos);
-            var map = vis.getNativeMap();
-            console.log(map);
-            map.panTo(new L.LatLng(latlng[0], latlng[1]));
-          });
-        })
         .error(function(err) {
           console.log("error");
           console.log(err);
         });
       }
-      window.onload = narrativesMap;
+      window.onload = function() {
+        // Prevents map from panning to static infowindow popup:
+        cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
+        // Loads CartoDB visualization:
+        narrativesMap();
+      };
     </script>
   </body>
 
