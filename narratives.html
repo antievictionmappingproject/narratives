@@ -19,11 +19,109 @@
         height: 100%;
       }
     </style>
+    <style>
+      /* Info Popup Container */
+/*      div.cartodb-infowindow {
+        position: absolute;
+        top: 0;
+        left: auto !important;
+        right: 0 !important;
+        bottom: auto !important;
+        height: 100%;
+        width: 400px;
+      }*/
+
+      /* Narrative Marker */
+      div.aemp-narrativemarker.cartodb-popup.v2.custom_infowindow {
+        min-width: 100px;
+        width: 100px !important;
+        padding: 10px 5px 5px;
+        background: black;
+        opacity: 0.8;
+        border-radius: 20px;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+      }
+      div.aemp-narrativemarker.cartodb-popup.v2:before {
+        border-top: 14px solid black;
+      }
+      div.aemp-narrativemarker.cartodb-popup.custom_infowindow p {
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+        cursor: default;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+      }
+
+      /* Info Drawer */
+      div.aemp-infodrawer.cartodb-popup.custom_infowindow {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 400px;
+        margin-top: 60px;
+        background: transparent;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.custom_infowindow div.cartodb-popup-content-wrapper {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        width: 350px;
+        background: white;
+        border-radius: 0;
+        box-shadow: 0 0 2px lightgray;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 h4 {
+        margin-bottom: 5px;
+      }
+      div.aemp-infodrawer.cartodb-popup p {
+        width: 100%;
+        max-width: 100%;
+      }
+      div.aemp-infodrawer.cartodb-popup p > iframe {
+        width: 100%;
+        height: 500px;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button {
+        top: 0;
+        right: 0;
+        box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:hover {
+        box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:before, div.cartodb-popup.v2 a.cartodb-popup-close-button:after {
+        background: black;
+      }
+    </style>
     <title>Anti-Eviction Mapping Project - Narratives of Displacement</title>
   </head>
   <body>
 
     <div id="map"></div>
+
+    <script type="infowindow/html" id="infowindow_template">
+      <div class="cartodb-popup v2 custom_infowindow">
+        <a href="#close" class="cartodb-popup-close-button close">x</a>
+        <div class="cartodb-popup-content-wrapper">
+          <div class="row">
+            <div class="label"></div>
+            <div class="info">
+              <h4>Name</h4>
+              <p>{{name}}</p>
+              <h4>Description</h4>
+              <p>{{description}}</p>
+              <h4>Narrative</h4>
+              <p>{{{narrative}}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
 
     <!-- Include CartoDB.js library -->
     <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
@@ -47,6 +145,10 @@
           ne_lon: -122.33430862426758
         };
         cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
+        .done(function(vis, layers) {
+          var map = vis.getNativeMap();
+          var sublayer = layers[1].getSubLayer(0);
+        })
         .error(function(err) {
           console.log("error");
           console.log(err);
@@ -54,7 +156,7 @@
       }
       window.onload = function() {
         // Prevents map from panning to static infowindow popup:
-        cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
+        // cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
         // Loads CartoDB visualization:
         narrativesMap();
       };
