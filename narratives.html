@@ -135,8 +135,31 @@
     </script>
 
     <!-- Include CartoDB.js library -->
+    <!-- Use external cartodb.js for production: -->
     <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <!-- Use external cartodb.uncompressed.js for debugging JS: -->
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.uncompressed.js"></script> -->
+
     <script>
+      // Overwrites part of CartoDB library:
+      cdb.geo.ui.Infowindow.prototype._closeInfowindow = function(ev) {
+        if (ev) {
+
+          // Removes .custom_infowindow from DOM when closed
+          // (so media doesn't continue playing after closing popup)
+          if ($(".custom_infowindow")) { $(".custom_infowindow").remove(); }
+
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+        if (this.model.get("visibility")) {
+           this.model.set("visibility", false);
+           this.trigger('close');
+        }
+      }
+    </script>
+    <script>
+      // Sets custom options for our CartoDB map:
       function narrativesMap() {
         var options = {
           https: true,
@@ -155,6 +178,8 @@
           ne_lat: 37.81046205554295,
           ne_lon: -122.33430862426758
         };
+
+        // Loads CartoDB visualization with custom options (defined above):
         cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
         .done(function(vis, layers) {
           var map = vis.getNativeMap();
@@ -168,7 +193,8 @@
       window.onload = function() {
         // Prevents map from panning to static infowindow popup:
         // cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
-        // Loads CartoDB visualization:
+
+        // Loads CartoDB visualization with our custom options:
         narrativesMap();
       };
     </script>
