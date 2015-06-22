@@ -21,7 +21,8 @@
     </style>
     <style>
       /* Info Popup Container */
-/*      div.cartodb-infowindow {
+      /*
+      div.cartodb-infowindow {
         position: absolute;
         top: 0;
         left: auto !important;
@@ -29,7 +30,8 @@
         bottom: auto !important;
         height: 100%;
         width: 400px;
-      }*/
+      }
+      */
 
       /* Narrative Marker */
       div.aemp-narrativemarker.cartodb-popup.v2.custom_infowindow {
@@ -115,28 +117,10 @@
 
     <div id="map"></div>
 
-    <script type="infowindow/html" id="infowindow_template">
-      <div class="cartodb-popup v2 custom_infowindow">
-        <a href="#close" class="cartodb-popup-close-button close">x</a>
-        <div class="cartodb-popup-content-wrapper">
-          <div class="row">
-            <div class="label"></div>
-            <div class="info">
-              <h4>Name</h4>
-              <p>{{name}}</p>
-              <h4>Description</h4>
-              <p>{{description}}</p>
-              <h4>Narrative</h4>
-              <p>{{{narrative}}}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </script>
-
     <!-- Include CartoDB.js library -->
-    <!-- Use external cartodb.js for production: -->
-    <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+    <script src="cartodb-3.14.6.js"></script>
+    <!-- Use external cartodb.js: -->
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script> -->
     <!-- Use external cartodb.uncompressed.js for debugging JS: -->
     <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.uncompressed.js"></script> -->
 
@@ -156,20 +140,20 @@
            this.model.set("visibility", false);
            this.trigger('close');
         }
-      }
+    }
     </script>
     <script>
       // Sets custom options for our CartoDB map:
       function narrativesMap() {
         var options = {
           https: true,
-          title: true,
-          description: true,
+          title: false,
+          description: false,
           searchControl: false,
           shareable: true,
           cartodb_logo: true,
           layer_selector: false,
-          legends: true,
+          legends: false,
           scrollwheel: true,
           fullscreen: true,
           infowindow: true,
