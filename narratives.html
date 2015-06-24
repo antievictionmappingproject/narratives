@@ -33,10 +33,22 @@
       }
       */
 
+      #narrative_map{
+        marker-fill-opacity: 0.9;
+        marker-line-color: #000000;
+        marker-line-width: 2;
+        marker-line-opacity: 1;
+        marker-placement: point;
+        marker-type: ellipse;
+        marker-width: 15;
+        marker-fill: #00ddff;
+        marker-allow-overlap: true;
+      }
+
       /* Narrative Marker */
       div.aemp-narrativemarker.cartodb-popup.v2.custom_infowindow {
-        min-width: 100px;
-        width: 100px !important;
+        min-width: 200px;
+        width: 200px !important;
         padding: 10px 5px 5px;
         background: black;
         opacity: 0.8;
@@ -54,6 +66,11 @@
         cursor: default;
         font-size: 15px;
         letter-spacing: 0.3px;
+      }
+
+      /* Narrative Marker Popup (Tooltip) */
+      div.aemp-tooltip.cartodb-tooltip-content-wrapper.dark p span {
+        color: #999999;
       }
 
       /* Info Drawer */
@@ -117,12 +134,47 @@
 
     <div id="map"></div>
 
+    <!-- Narrative infowindow hover popup (tooltip) template -->
+    <!-- (Currently not in use; styled through CartoDB editor) -->
+    <script type="infowindow/html" id="aemp-tooltip">
+      <div class="aemp-tooltip cartodb-tooltip-content-wrapper dark">
+        <div class="aemp-tooltip cartodb-tooltip-content">
+          <h4>name</h4>
+          <p>{{name}}</p>
+          <h4>address</h4>
+          <p>{{address}}</p>
+          <h4>description</h4>
+          <p>{{description}}</p>
+        </div>
+      </div>
+    </script>
+
+    <!-- Narrative infowindow drawer template -->
+    <script type="infowindow/html" id="aemp-infowindow">
+      <div class="aemp-infodrawer cartodb-popup v2 custom_infowindow">
+        <a href="#close" class="aemp-infodrawer cartodb-popup-close-button close">x</a>
+        <div class="aemp-infodrawer cartodb-popup-content-wrapper">
+          <div class="aemp-infodrawer-content cartodb-popup-content row">
+            <div class="label"></div>
+            <div class="info">
+              <h4>Name</h4>
+              <p>{{name}}</p>
+              <h4>Description</h4>
+              <p>{{description}}</p>
+              <h4>Narrative</h4>
+              <p>{{{narrative}}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+
     <!-- Include CartoDB.js library -->
     <script src="cartodb-3.14.6.js"></script>
     <!-- Use external cartodb.js: -->
-    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script> -->
-    <!-- Use external cartodb.uncompressed.js for debugging JS: -->
-    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.uncompressed.js"></script> -->
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script> -->
+    <!-- Use external cartodb.uncompressed.js for debugging: -->
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.uncompressed.js"></script> -->
 
     <script>
       // Overwrites part of CartoDB library:
@@ -140,39 +192,45 @@
            this.model.set("visibility", false);
            this.trigger('close');
         }
-    }
+      }
     </script>
     <script>
-      // Sets custom options for our CartoDB map:
       function narrativesMap() {
+        // Sets custom options for our CartoDB map:
         var options = {
           https: true,
           title: false,
           description: false,
           searchControl: false,
           shareable: true,
-          cartodb_logo: true,
+          cartodb_logo: false,
           layer_selector: false,
           legends: false,
           scrollwheel: true,
           fullscreen: true,
           infowindow: true,
+          tooltip: true,
           sw_lat: 37.74900069437069,
           sw_lon: -122.52845764160156,
           ne_lat: 37.81046205554295,
           ne_lon: -122.33430862426758
         };
 
-        // Loads CartoDB visualization with custom options (defined above):
+        // Loads CartoDB visualization with custom options:
         cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
         .done(function(vis, layers) {
           var map = vis.getNativeMap();
-          var sublayer = layers[1].getSubLayer(0);
+          var sublayer = layers[1].getSubLayer(3);
+          sublayer.infowindow.set({
+            // Sets infowindow drawer template to custom HTML:
+            template: $("#aemp-infowindow").html(),
+            // Prevents formatting of iframe code:
+            sanitizeTemplate: false
+          });
+
+          // TODO: Set infowindow hover template to $("#aemp-tooltip").html()
         })
-        .error(function(err) {
-          console.log("error");
-          console.log(err);
-        });
+        .error(function(err) { console.log(err); });
       }
       window.onload = function() {
         // Prevents map from panning to static infowindow popup:
