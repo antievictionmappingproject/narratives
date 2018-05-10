@@ -217,7 +217,7 @@
         };
 
         // Loads CartoDB visualization with custom options:
-        cartodb.createVis("map", 'http://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
+        cartodb.createVis("map", 'https://ampitup.cartodb.com/api/v2/viz/fce8b53a-14e4-11e4-87ad-0e230854a1cb/viz.json', options)
         .done(function(vis, layers) {
           var map = vis.getNativeMap();
           var sublayer = layers[1].getSubLayer(3);
