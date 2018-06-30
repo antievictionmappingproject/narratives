@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta https-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
      <meta charset="utf-8">
-    <meta name="description" content="Narratives of Displacement: Oral History Project documenting loss in the San Francisco Bay Area by the Anti-Eviction Mapping Project">
+    <meta name="description" content="Narratives of Displacement: Oral History Project documenting loss in Los Angeles by the Anti-Eviction Mapping Project">
     <meta name="author" content="Anti-Eviction Mapping Project">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
+ 	<meta name="keywords" content="los angeles, gentrification, oral history, narrative, displacement">
     <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="https://libs.cartodb.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+        <link rel="stylesheet" href="http://libs.cartodb.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
     <![endif]-->
 
     <style type="text/css">
@@ -161,14 +161,14 @@
               <h4>Narrative</h4>
               <p>{{{narrative}}}</p>
 			   <h4>Credits</h4>
-              <p>{{{credit}}}</p>
+              <p>{{credit}}</p>
             </div>
           </div>
         </div>
       </div>
        </script>
  
-     <!-- Include CartoDB.js library --><script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
      <!-- Use external cartodb.js: -->
      <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script> -->
      <!-- Use external cartodb.uncompressed.js for debugging: -->
@@ -201,18 +201,19 @@
           cartodb_logo: false,
           layer_selector: false,
           legends: false,
+			labels: false,
           scrollwheel: true,
           fullscreen: true,
           infowindow: true,
           tooltip: true,
-          sw_lat: 37.6942099,
-		  sw_lon: -122.502279,
-          ne_lat: 37.8291988,
-          ne_lon: -122.1706483 
+          sw_lat: 33.646107,
+		  sw_lon: -118.6451877,
+          ne_lat: 34.3911754,
+          ne_lon: -118.0705397
         };
         // Loads CartoDB visualization with custom options:
         cartodb.createVis("map", './cartoviz.json', options)
-        .done(function(vis, layers) {
+          .done(function(vis, layers) {
           var map = vis.getNativeMap();
           var sublayer = layers[1].getSubLayer(3);
           sublayer.infowindow.set({
