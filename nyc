@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta https-equiv="Content-Type" content="text/html;charset=utf-8">
+     <meta charset="utf-8">
+    <meta name="description" content="Narratives of Displacement: Oral History Project documenting loss in New York City by the Anti-Eviction Mapping Project">
+    <meta name="author" content="Anti-Eviction Mapping Project">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="https://libs.cartodb.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+    <![endif]-->
+
+    <style type="text/css">
+      html, body, #map {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <style>
+      /* Info Popup Container */
+      /*
+      div.cartodb-infowindow {
+        position: absolute;
+        top: 0;
+        left: auto !important;
+        right: 0 !important;
+        bottom: auto !important;
+        height: 100%;
+        width: 400px;
+      }
+      */
+      #narrative_map{
+        marker-fill-opacity: 0.9;
+        marker-line-color: #000000;
+        marker-line-width: 2;
+        marker-line-opacity: 1;
+        marker-placement: point;
+        marker-type: ellipse;
+        marker-width: 15;
+        marker-fill: #00ddff;
+        marker-allow-overlap: true;
+      }
+      /* Narrative Marker */
+      div.aemp-narrativemarker.cartodb-popup.v2.custom_infowindow {
+        min-width: 200px;
+        width: 200px !important;
+        padding: 10px 5px 5px;
+        background: black;
+        opacity: 0.8;
+        border-radius: 20px;
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+      }
+      div.aemp-narrativemarker.cartodb-popup.v2:before {
+        border-top: 14px solid black;
+      }
+      div.aemp-narrativemarker.cartodb-popup.custom_infowindow p {
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+        cursor: default;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+      }
+      /* Narrative Marker Popup (Tooltip) */
+      div.aemp-tooltip.cartodb-tooltip-content-wrapper.dark p span {
+        color: #999999;
+      }
+      /* Info Drawer */
+      div.aemp-infodrawer.cartodb-popup.custom_infowindow {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 400px;
+        margin-top: 60px;
+        background: transparent;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.custom_infowindow div.cartodb-popup-content-wrapper {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        width: 350px;
+        background: white;
+        border-radius: 0;
+        box-shadow: 0 0 2px lightgray;
+      }
+      div.aemp-infodrawer.cartodb-popup .jspContainer:before,
+      div.aemp-infodrawer.cartodb-popup .jspContainer:after {
+        width: 100%;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 h4 {
+        margin-bottom: 5px;
+      }
+      div.cartodb-tooltip-content-wrapper.dark h4 {
+        margin: 0;
+      }
+      div.aemp-infodrawer.cartodb-popup p {
+        width: 100%;
+        max-width: 100%;
+      }
+      div.aemp-infodrawer.cartodb-popup p > iframe {
+        width: 100%;
+        height: 500px;
+      }
+      div.aemp-infodrawer-content.cartodb-popup-content {
+        max-height: 100% !important;
+        height: calc(100% - 60px - (12px * 2)) !important;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button {
+        top: 0;
+        right: 0;
+        box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:hover {
+        box-shadow: none;
+      }
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:before, div.cartodb-popup.v2 a.cartodb-popup-close-button:after {
+        background: black;
+      }
+    </style>
+    <title>Anti-Eviction Mapping Project - Narratives of Displacement</title>
+  </head>
+  <body>
+
+    <div id="map"></div>
+
+    <!-- Narrative infowindow hover popup (tooltip) template -->
+    <!-- (Currently not in use; styled through CartoDB editor) -->
+    <script type="infowindow/html" id="aemp-tooltip">
+      <div class="aemp-tooltip cartodb-tooltip-content-wrapper dark">
+        <div class="aemp-tooltip cartodb-tooltip-content">
+          <h4>name</h4>
+          <p>{{name}}</p>
+          <h4>address</h4>
+          <p>{{address}}</p>
+          <h4>description</h4>
+          <p>{{description}}</p>
+        </div>
+      </div>
+    </script>
+
+    <!-- Narrative infowindow drawer template -->
+    <!-- (Currently not in use; styled through CartoDB editor) -->
+    <script type="infowindow/html" id="aemp-infowindow">
+      <div class="aemp-infodrawer cartodb-popup v2 custom_infowindow">
+        <a href="#close" class="aemp-infodrawer cartodb-popup-close-button close">x</a>
+        <div class="aemp-infodrawer cartodb-popup-content-wrapper">
+          <div class="aemp-infodrawer-content cartodb-popup-content row">
+            <div class="label"></div>
+            <div class="info">
+              <h4>Name</h4>
+              <p>{{name}}</p>
+              <h4>Description</h4>
+              <p>{{description}}</p>
+              <h4>Narrative</h4>
+              <p>{{{narrative}}}</p>
+			   <h4>Credits</h4>
+              <p>{{{credit}}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+       </script>
+ 
+     <!-- Include CartoDB.js library --><script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+     <!-- Use external cartodb.js: -->
+     <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script> -->
+     <!-- Use external cartodb.uncompressed.js for debugging: -->
+
+    <script>
+      // Overwrites part of CartoDB library:
+      cdb.geo.ui.Infowindow.prototype._closeInfowindow = function(ev) {
+        if (ev) {
+          // Removes .custom_infowindow from DOM when closed
+          // (so media doesn't continue playing after closing popup)
+          if ($(".custom_infowindow")) { $(".custom_infowindow").remove(); }
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+        if (this.model.get("visibility")) {
+           this.model.set("visibility", false);
+           this.trigger('close');
+        }
+      }
+    </script>
+    <script>
+      function narrativesMap() {
+        // Sets custom options for our CartoDB map:
+        var options = {
+          https: true,
+          title: false,
+          description: false,
+          searchControl: false,
+          shareable: true,
+          cartodb_logo: false,
+          layer_selector: false,
+          legends: false,
+          scrollwheel: true,
+          fullscreen: true,
+          infowindow: true,
+          tooltip: true,
+          sw_lat: 40.516651, 
+		  sw_lon: -74.242788,
+          ne_lat: 40.898161, 
+          ne_lon: -73.630296 
+        };
+        // Loads CartoDB visualization with custom options:
+        cartodb.createVis("map", './cartoviz.json', options)
+        .done(function(vis, layers) {
+          var map = vis.getNativeMap();
+          var sublayer = layers[1].getSubLayer(3);
+          sublayer.infowindow.set({
+            // Sets infowindow drawer template to custom HTML:
+            template: $("#aemp-infowindow").html(),
+            // Prevents formatting of iframe code:
+            sanitizeTemplate: false
+          });
+          // TODO: Set infowindow hover template to $("#aemp-tooltip").html()
+        })
+        .error(function(err) { console.log(err); });
+      }
+      window.onload = function() {
+        // Prevents map from panning to static infowindow popup:
+        // cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
+        // Loads CartoDB visualization with our custom options:
+        narrativesMap();
+      };
+    </script>
+  </body>
+
+  <!-- Include Google Analytics -->
+ <script src="./analytics.js"></script>
+</html>
