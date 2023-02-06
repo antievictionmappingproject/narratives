@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta https-equiv="Content-Type" content="text/html;charset=utf-8">
-     <meta charset="utf-8">
-    <meta name="description" content="Narratives of Displacement: Oral History Project documenting loss in the San Francisco Bay Area by the Anti-Eviction Mapping Project">
-    <meta name="author" content="Anti-Eviction Mapping Project">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta https-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Narratives of Displacement: Oral History Project documenting loss in the San Francisco Bay Area by the Anti-Eviction Mapping Project"
+    />
+    <meta name="author" content="Anti-Eviction Mapping Project" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
 
-    <link rel="stylesheet" href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link
+      rel="stylesheet"
+      href="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css"
+    />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="https://libs.cartodb.com/cartodb.js/v3/themes/css/cartodb.ie.css" />
+      <link
+        rel="stylesheet"
+        href="https://libs.cartodb.com/cartodb.js/v3/themes/css/cartodb.ie.css"
+      />
     <![endif]-->
 
     <style type="text/css">
-      html, body, #map {
+      html,
+      body,
+      #map {
         margin: 0;
         width: 100%;
         height: 100%;
@@ -32,7 +46,7 @@
         width: 400px;
       }
       */
-      #narrative_map{
+      #narrative_map {
         marker-fill-opacity: 0.9;
         marker-line-color: #000000;
         marker-line-width: 2;
@@ -51,7 +65,7 @@
         background: black;
         opacity: 0.8;
         border-radius: 20px;
-        box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
       }
       div.aemp-narrativemarker.cartodb-popup.v2:before {
         border-top: 14px solid black;
@@ -81,7 +95,8 @@
         box-shadow: none;
         -webkit-box-shadow: none;
       }
-      div.aemp-infodrawer.cartodb-popup.custom_infowindow div.cartodb-popup-content-wrapper {
+      div.aemp-infodrawer.cartodb-popup.custom_infowindow
+        div.cartodb-popup-content-wrapper {
         position: absolute;
         right: 0;
         height: 100%;
@@ -120,14 +135,14 @@
       div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:hover {
         box-shadow: none;
       }
-      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:before, div.cartodb-popup.v2 a.cartodb-popup-close-button:after {
+      div.aemp-infodrawer.cartodb-popup.v2 a.cartodb-popup-close-button:before,
+      div.cartodb-popup.v2 a.cartodb-popup-close-button:after {
         background: black;
       }
     </style>
     <title>Anti-Eviction Mapping Project - Narratives of Displacement</title>
   </head>
   <body>
-
     <div id="map"></div>
 
     <!-- Narrative infowindow hover popup (tooltip) template -->
@@ -160,34 +175,37 @@
               <p>{{description}}</p>
               <h4>Narrative</h4>
               <p>{{{narrative}}}</p>
-			   <h4>Credits</h4>
+      <h4>Credits</h4>
               <p>{{{credit}}}</p>
             </div>
           </div>
         </div>
       </div>
-       </script>
- 
-     <!-- Include CartoDB.js library --><script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
-     <!-- Use external cartodb.js: -->
-     <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script> -->
-     <!-- Use external cartodb.uncompressed.js for debugging: -->
+    </script>
+
+    <!-- Include CartoDB.js library -->
+    <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+    <!-- Use external cartodb.js: -->
+    <!-- <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script> -->
+    <!-- Use external cartodb.uncompressed.js for debugging: -->
 
     <script>
       // Overwrites part of CartoDB library:
-      cdb.geo.ui.Infowindow.prototype._closeInfowindow = function(ev) {
+      cdb.geo.ui.Infowindow.prototype._closeInfowindow = function (ev) {
         if (ev) {
           // Removes .custom_infowindow from DOM when closed
           // (so media doesn't continue playing after closing popup)
-          if ($(".custom_infowindow")) { $(".custom_infowindow").remove(); }
+          if ($(".custom_infowindow")) {
+            $(".custom_infowindow").remove();
+          }
           ev.preventDefault();
           ev.stopPropagation();
         }
         if (this.model.get("visibility")) {
-           this.model.set("visibility", false);
-           this.trigger('close');
+          this.model.set("visibility", false);
+          this.trigger("close");
         }
-      }
+      };
     </script>
     <script>
       function narrativesMap() {
@@ -206,26 +224,29 @@
           infowindow: true,
           tooltip: true,
           sw_lat: 37.6942099,
-		  sw_lon: -122.502279,
+          sw_lon: -122.502279,
           ne_lat: 37.8291988,
-          ne_lon: -122.1706483 
+          ne_lon: -122.1706483,
         };
         // Loads CartoDB visualization with custom options:
-        cartodb.createVis("map", './cartoviz.json', options)
-        .done(function(vis, layers) {
-          var map = vis.getNativeMap();
-          var sublayer = layers[1].getSubLayer(3);
-          sublayer.infowindow.set({
-            // Sets infowindow drawer template to custom HTML:
-            template: $("#aemp-infowindow").html(),
-            // Prevents formatting of iframe code:
-            sanitizeTemplate: false
+        cartodb
+          .createVis("map", "./cartoviz.json", options)
+          .done(function (vis, layers) {
+            var map = vis.getNativeMap();
+            var sublayer = layers[1].getSubLayer(3);
+            sublayer.infowindow.set({
+              // Sets infowindow drawer template to custom HTML:
+              template: $("#aemp-infowindow").html(),
+              // Prevents formatting of iframe code:
+              sanitizeTemplate: false,
+            });
+            // TODO: Set infowindow hover template to $("#aemp-tooltip").html()
+          })
+          .error(function (err) {
+            console.log(err);
           });
-          // TODO: Set infowindow hover template to $("#aemp-tooltip").html()
-        })
-        .error(function(err) { console.log(err); });
       }
-      window.onload = function() {
+      window.onload = function () {
         // Prevents map from panning to static infowindow popup:
         // cdb.geo.ui.Infowindow.prototype.adjustPan = function(callback) { return 0; }
         // Loads CartoDB visualization with our custom options:
@@ -236,5 +257,4 @@
 
   <!-- Include Google Analytics -->
   <script src="googleanalytics.js"></script>
-
 </html>
