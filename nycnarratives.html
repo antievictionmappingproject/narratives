@@ -212,7 +212,7 @@
           ne_lon: -73.630296 
         };
         // Loads CartoDB visualization with custom options:
-        cartodb.createVis("map", './cartoviz.json', options)
+        cartodb.createVis("map", './nyc-cartoviz.js', options)
         .done(function(vis, layers) {
           var map = vis.getNativeMap();
           var sublayer = layers[1].getSubLayer(3);
